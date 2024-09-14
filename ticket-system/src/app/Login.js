@@ -1,14 +1,37 @@
 'use client'
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
+import { getSupabaseBrowserClient } from "./supabase-utils/browserClient";
+import { useRouter } from "next/navigation";
 
 export const Login = ({ isPasswordLogin }) => {
   
     const emailInputRef = useRef(null)
     const passwordInputRef = useRef(null)
+    const supabase = getSupabaseBrowserClient()
+    const router = useRouter()
     // console.log(isPasswordLogin)
+    
+    useEffect(() => {
+      const {
+          data: { subscription },
+      } = supabase.auth.onAuthStateChange((event, session) => {
+          if (event === "SIGNED_IN") {
+              router.push("/tickets");
+          }
+      })
+      return () => subscription.unsubscribe()
+  }, [])
+    
     return (
-    <form onSubmit={(event) => {event.preventDefault(); if(isPasswordLogin) {alert("Login with password")} else {alert("Login with Magic Link")} }}>
+    <form action={isPasswordLogin ? "/auth/pw-login" : "/auth/magic-link"} method="POST" onSubmit={(event) => {isPasswordLogin && event.preventDefault(); 
+    if(isPasswordLogin) {
+        supabase.auth.signInWithPassword({
+          email: emailInputRef.current.value, 
+          password: passwordInputRef.current.value})
+            .then((result) => {
+              !result.data?.user && alert("Could not sign in");
+              }) }}}>
       <article style={{ maxWidth: "480px", margin: "auto" }}>
         <header>Login</header>
         <fieldset>
