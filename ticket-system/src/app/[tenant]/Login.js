@@ -19,14 +19,16 @@ export const Login = ({ isPasswordLogin, tenant, tenantName }) => {
           data: { subscription },
       } = supabase.auth.onAuthStateChange((event, session) => {
           if (event === "SIGNED_IN") {
-              router.push("/tickets");
+              router.push(urlPath("/tickets", tenant));
           }
       })
       return () => subscription.unsubscribe()
-  }, [])
+    }, [])
+
+    // urlPath("/auth/magic-link", tenant)
     
     return (
-    <form action={isPasswordLogin ? "/auth/pw-login" : "/auth/magic-link"} method="POST" onSubmit={(event) => {isPasswordLogin && event.preventDefault(); 
+    <form action={isPasswordLogin ? urlPath("/auth/pw-login", tenant) : urlPath("/auth/magic-link", tenant)} method="POST" onSubmit={(event) => {isPasswordLogin && event.preventDefault(); 
     if(isPasswordLogin) {
         supabase.auth.signInWithPassword({
           email: emailInputRef.current.value, 
@@ -35,7 +37,11 @@ export const Login = ({ isPasswordLogin, tenant, tenantName }) => {
               !result.data?.user && alert("Could not sign in");
               }) }}}>
       <article style={{ maxWidth: "480px", margin: "auto" }}>
-        <header>Login</header>
+        <header>Login
+          <div style={{ display: "block", fontSize: "0.7em" }}>
+            {tenantName}
+          </div>
+        </header>
         <fieldset>
             <label htmlFor="email">Email
                 <input ref={emailInputRef} type="email" id="email" name="email" required/>
@@ -48,9 +54,9 @@ export const Login = ({ isPasswordLogin, tenant, tenantName }) => {
         </fieldset>
         <p>
           {isPasswordLogin ? (
-            <Link href={{ pathname: "/", query: { magicLink: "yes" },}}>Go to Magic Link Login</Link>
+            <Link href={{ pathname: urlPath("/", tenant), query: { magicLink: "yes" },}}>Go to Magic Link Login</Link>
           ) : (
-            <Link href={{ pathname: "/", query: { magicLink: "no" },}}>Go to Password Login</Link>
+            <Link href={{ pathname: urlPath("/", tenant), query: { magicLink: "no" },}}>Go to Password Login</Link>
           )}
         </p>
         <button type="submit">Sign in with {isPasswordLogin ? "Password" : "Magic Link"}</button>
