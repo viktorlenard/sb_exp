@@ -1,10 +1,12 @@
 'use client'
+
 import Link from "next/link";
 import { useRef, useEffect } from "react";
-import { getSupabaseBrowserClient } from "./supabase-utils/browserClient";
+import { getSupabaseBrowserClient } from "../../supabase-utils/browserClient";
 import { useRouter } from "next/navigation";
+import { urlPath } from "@/utils/url-helpers";
 
-export const Login = ({ isPasswordLogin }) => {
+export const Login = ({ isPasswordLogin, tenant, tenantName }) => {
   
     const emailInputRef = useRef(null)
     const passwordInputRef = useRef(null)

@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-export default function ErrorPage({searchParams}) {
+export default function ErrorPage({ searchParams, params }) {
 
     const { type } = searchParams
-    const knownErrors = ['login-failed', 'magiclink']
+    const knownErrors = ['login-failed', 'magiclink', 'invalid_magiclink']
 
     return(
         <div style={{ textAlign: "center" }}>
@@ -14,13 +14,16 @@ export default function ErrorPage({searchParams}) {
             {type === "magiclink" && (
                 <strong>Could not send a magic link. Maybe you had a typo in your E-Mail?</strong>
             )}
+            {type === "invalid_magiclink" && (
+                <strong>The magic link was invalid. Maybe it expired? Please request a new one.</strong>
+            )}
             {!knownErrors.includes(type) && (
                 <strong>
                 Something went wrong. Please try again or contact support.
                 </strong>
             )}
             <br /><br />
-            <Link role="button" href="/">
+            <Link role="button" href={urlPath('/', params.tenant)}>
                 Go back.
             </Link>
         </div>

@@ -1,11 +1,12 @@
 'use client'
+
 import Link from "next/link"
 import { useEffect } from "react";
 import { usePathname } from "next/navigation"
 import { useRouter } from "next/navigation";
-import { getSupabaseBrowserClient } from "../supabase-utils/browserClient"
+import { getSupabaseBrowserClient } from "../../../supabase-utils/browserClient"
 
-export default function Nav() {
+export default function Nav( {tenant} ) {
 
     const supabase = getSupabaseBrowserClient()
     const pathname = usePathname()
@@ -18,7 +19,7 @@ export default function Nav() {
             data: { subscription },
         } = supabase.auth.onAuthStateChange((event, session) => {
             if (event === "SIGNED_OUT") {
-                router.push("/");
+                router.push(`/${tenant}`);
             }
         })
         return () => subscription.unsubscribe()
@@ -28,13 +29,13 @@ export default function Nav() {
         <nav>
             <ul>
                 <li>
-                    <Link role='button' href='/tickets' {...(pathname === "/tickets" ? activeProps : inactiveProps )}>Ticket List</Link>
+                    <Link role='button' href={urlPath("/tickets", tenant)} {...(pathname === urlPath("/tickets", tenant) ? activeProps : inactiveProps )}>Ticket List</Link>
                 </li>
                 <li>
-                    <Link role='button' href='/tickets/new' {...(pathname === "/tickets/new" ? activeProps : inactiveProps )}>Create new Ticket</Link>
+                    <Link role='button' href={urlPath("/tickets", tenant)} {...(pathname === urlPath("/tickets", tenant) ? activeProps : inactiveProps )}>Create new Ticket</Link>
                 </li>
                 <li>
-                <Link role='button' href='/tickets/users' {...(pathname === "/tickets/users" ? activeProps : inactiveProps )}>User List</Link>
+                <Link role='button' href={urlPath("/tickets", tenant)} {...(pathname === urlPath("/tickets", tenant) ? activeProps : inactiveProps )}>User List</Link>
                 </li>
             </ul>
             <ul>
