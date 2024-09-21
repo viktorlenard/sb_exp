@@ -19,7 +19,12 @@ export const Login = ({ isPasswordLogin, tenant, tenantName }) => {
           data: { subscription },
       } = supabase.auth.onAuthStateChange((event, session) => {
           if (event === "SIGNED_IN") {
-              router.push(urlPath("/tickets", tenant));
+            if(session.user.app_metadata.tenants?.includes(tenant)){
+              router.push(`/tickets`);
+            } else {
+              supabase.auth.signOut()
+              alert("Could not sign in, tenant does not match.")
+            }
           }
       })
       return () => subscription.unsubscribe()
@@ -54,12 +59,19 @@ export const Login = ({ isPasswordLogin, tenant, tenantName }) => {
         </fieldset>
         <p>
           {isPasswordLogin ? (
-            <Link href={{ pathname: urlPath("/", tenant), query: { magicLink: "yes" },}}>Go to Magic Link Login</Link>
+          <Link style={{textAlign: 'center', display: 'block'}} href={{ pathname: urlPath("/", tenant), query: { magicLink: "yes" },}}>Go to Magic Link Login</Link>
           ) : (
-            <Link href={{ pathname: urlPath("/", tenant), query: { magicLink: "no" },}}>Go to Password Login</Link>
+            <Link style={{textAlign: 'center', display: 'block'}} href={{ pathname: urlPath("/", tenant), query: { magicLink: "no" },}}>Go to Password Login</Link>
           )}
         </p>
         <button type="submit">Sign in with {isPasswordLogin ? "Password" : "Magic Link"}</button>
+        <Link href={urlPath("/register", tenant)} style={{
+          textAlign: "center",
+          display: "block",
+          marginTop: "1em",
+        }} >
+          Create account
+        </Link>
       </article>
     </form>
   );

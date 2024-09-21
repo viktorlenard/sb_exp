@@ -1,5 +1,14 @@
+import { getSupabaseCookiesUtilClient } from "@/supabase-utils/cookiesUtilClient";
 
-export default function TenantName(props) {
+
+export default async function TenantName({ tenant }) {
+    
+    let tenantName = "Unknown";
+    const supabase = getSupabaseCookiesUtilClient()
+    const selection = await supabase.from("tenants").select("name").eq("id", tenant).single()
+    const { data, error } = selection;
+    console.log({ tenant, data, error });
+    tenantName = data?.name ?? tenantName
 
     return(
         <header style={{ marginBottom: '10px' }}>
@@ -12,7 +21,7 @@ export default function TenantName(props) {
             >
                 Ticket System
                 <strong style={{ marginLeft: '1ex' }}>
-                    {props.TenantName}
+                    {tenantName}
                 </strong>
             </div>
         </header>

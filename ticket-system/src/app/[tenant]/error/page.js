@@ -4,7 +4,14 @@ import { urlPath } from "@/utils/url-helpers";
 export default function ErrorPage({ searchParams, params }) {
 
     const { type } = searchParams
-    const knownErrors = ['login-failed', 'magiclink', 'invalid_magiclink']
+    const knownErrors = [
+        'login-failed', 
+        'magiclink', 
+        'invalid_magiclink', 
+        'register_mail_mismatch',
+        'register_mail_exists',
+        'register_unknown'
+    ]
 
     return(
         <div style={{ textAlign: "center" }}>
@@ -17,6 +24,15 @@ export default function ErrorPage({ searchParams, params }) {
             )}
             {type === "invalid_magiclink" && (
                 <strong>The magic link was invalid. Maybe it expired? Please request a new one.</strong>
+            )}
+            {type === "register_mail_mismatch" && (
+                <strong>You are not legitimated to register an account with<u>{searchParams.email}.</u></strong>
+            )}
+            {type === "register_mail_exists" && (
+                <strong>There is already an account registered with &nbsp;<u>{searchParams.email}</u>.</strong>
+            )}
+            {type === "register_unknown" && (
+                <strong>Sorry but an unknown error occurred when trying to create an account.</strong>
             )}
             {!knownErrors.includes(type) && (
                 <strong>

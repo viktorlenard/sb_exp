@@ -20,13 +20,13 @@ export default function Nav( { tenant } ) {
             data: { subscription },
         } = supabase.auth.onAuthStateChange((event, session) => {
             if (event === "SIGNED_OUT") {
-                router.push(`/${tenant}`);
+                router.push(urlPath('/', tenant));
             }
         })
         return () => subscription.unsubscribe()
     }, [])
     
-    urlPath("/tickets/users", tenant)
+    // urlPath("/tickets/users", tenant)
 
     return(
         <nav>
