@@ -1,4 +1,7 @@
 import TicketList from "./TicketList";
+import { TicketFilters } from "./TicketFilters";
+import { Suspense } from "react";
+export const dynamic = "force-dynamic"; // Prevent page caching. Always fresh data.
 
 const dummyTickets = [
     {
@@ -21,11 +24,16 @@ const dummyTickets = [
     },
   ];
 
-export default function TicketListPage( {params} ) {
+export default function TicketListPage( { params, searchParams } ) {
     return(
         <>
             <h2>Ticket List</h2>
-            <TicketList tickets={dummyTickets} tenant={params.tenant}/>
+            <TicketFilters tenant={params.tenant}/>
+            <Suspense 
+            fallback={ <div aria-busy="true">Loading tickets...</div> }
+            key={JSON.stringify(searchParams)}>
+              <TicketList tenant={params.tenant} searchParams={searchParams}/>
+            </Suspense>
         </>
     )
 }

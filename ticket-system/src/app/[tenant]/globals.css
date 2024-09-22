@@ -31,3 +31,11 @@ body {
     text-wrap: balance;
   }
 }
+
+button.little-danger {
+  font-size: 0.9rem;
+  width: auto;
+  justify-self: end;
+  border-color: var(--del-color);
+  background: transparent;
+}
