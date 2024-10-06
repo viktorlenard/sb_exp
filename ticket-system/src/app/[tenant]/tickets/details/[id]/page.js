@@ -13,10 +13,10 @@ export default async function TicketDetailsPage({ params }) {
   const supabase = getSupabaseCookiesUtilClient()
   const id = Number(params.id)
   const { data: ticket, error } = await supabase
-  .from('tickets')
-  .select('*')
-  .eq('id', id)
-  .single()
+    .from('tickets')
+    .select('*, comments (*)')
+    .eq('id', id)
+    .single()
 
   if (error) return notFound();
 
@@ -32,7 +32,7 @@ export default async function TicketDetailsPage({ params }) {
   // True is logged in user is the author.  
   const isAuthor = serviceUser.id === ticket.created_by;
 
-  const {created_at, title, description, created_by, status, author_name} = ticket
+  const {created_at, title, description, created_by, status, author_name, assignee, comments } = ticket
   console.log(ticket)
   
   const dateString = new Date(created_at).toLocaleString("en-UK");
@@ -46,6 +46,8 @@ export default async function TicketDetailsPage({ params }) {
       author_name={author_name}
       dateString={dateString}
       isAuthor={isAuthor}
+      assignee={assignee}
+      initialComments={comments}
     />
     );
   }

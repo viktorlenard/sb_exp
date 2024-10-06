@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import { getSupabaseBrowserClient } from "@/supabase-utils/browserClient";
 import { urlPath } from "@/utils/url-helpers";
 import { useRouter } from "next/navigation";
+import { AssigneeSelect } from "@/components/AssigneeSelect";
 
 export default function CreateTicket({params}) {
   const { tenant } = params
@@ -10,6 +11,7 @@ export default function CreateTicket({params}) {
   const ticketTitleRef = useRef(null);
   const ticketDescriptionRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false)
+  const [assignee, setAssignee] = useState(null);
   const supabase = getSupabaseBrowserClient()
 
   useEffect(() => {
@@ -29,7 +31,7 @@ export default function CreateTicket({params}) {
             supabase
             .from('tickets')
             .insert({
-              title, description, tenant
+              title, description, tenant, assignee
             })
             .select()
             .single()
@@ -48,6 +50,9 @@ export default function CreateTicket({params}) {
         }}
       >
         <input disabled={isLoading} ref={ticketTitleRef} placeholder="Add a title" />
+        <AssigneeSelect 
+        tenant={params.tenant}
+        onValueChanged={(v) => setAssignee(v)}/>
         <textarea
           disabled={isLoading}
           ref={ticketDescriptionRef}

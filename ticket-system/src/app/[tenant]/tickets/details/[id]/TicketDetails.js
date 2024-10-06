@@ -5,6 +5,7 @@ import { TicketComments } from "./TicketComments";
 import { getSupabaseBrowserClient } from "@/supabase-utils/browserClient";
 import { urlPath } from "@/utils/url-helpers";
 import { useRouter } from "next/navigation";
+import { AssigneeSelect } from "@/components/AssigneeSelect";
 
 export function TicketDetails({
   tenant,
@@ -15,9 +16,12 @@ export function TicketDetails({
   author_name,
   dateString,
   isAuthor,
+  assignee,
+  initialComments
 }) {
   const supabase = getSupabaseBrowserClient();
   const router = useRouter();
+  console.log(assignee)
 
   return (
     <article className={classes.ticketDetails}>
@@ -29,24 +33,40 @@ export function TicketDetails({
               {TICKET_STATUS[status]}
             </strong>
           </div>
-
-          {isAuthor && (
-            <button
-              role="button"
-              className="little-danger"
-              onClick={() => {
+          <div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "end", }}>
+          <AssigneeSelect
+              tenant={tenant}
+              onValueChanged={(v) => {
                 supabase
                   .from("tickets")
-                  .delete()
+                  .update({
+                    assignee: v,
+                  })
                   .eq("id", id)
-                  .then((res) => {
-                    router.push(urlPath("/tickets", tenant));
-                  });
+                  .then(() => router.refresh());
               }}
-            >
-              Delete ticket
-            </button>
-          )}
+              initialValue={assignee}
+            />
+            {isAuthor && (
+              <button
+                role="button"
+                className="little-danger"
+                onClick={() => {
+                  supabase
+                    .from("tickets")
+                    .delete()
+                    .eq("id", id)
+                    .then((res) => {
+                      router.push(urlPath("/tickets", tenant));
+                    });
+                }}
+              >
+                Delete ticket
+              </button>
+            )}
+            </div>
+          </div>
         </div>
         <br />
         <small className={classes.authorAndDate}>
@@ -57,7 +77,7 @@ export function TicketDetails({
 
       <section>{description}</section>
 
-      <TicketComments />
+      <TicketComments ticket={id} initialComments={initialComments} />
     </article>
   );
 }
