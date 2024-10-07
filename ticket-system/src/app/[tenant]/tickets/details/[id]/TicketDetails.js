@@ -77,7 +77,7 @@ export function TicketDetails({
 
       <section>{description}</section>
 
-      <TicketComments ticket={id} initialComments={initialComments} />
+      <TicketComments ticket={id} initialComments={initialComments} tenant={tenant}/>
     </article>
   );
 }

@@ -39,3 +39,15 @@ button.little-danger {
   border-color: var(--del-color);
   background: transparent;
 }
+
+button.file-badge {
+  font-size: 0.9rem;
+  display: inline-block;
+  width: auto;
+  margin-right: 0.5rem;
+  padding: 0.26em 0.5em;
+  border-radius: 4px;
+  border: 0;
+  background-color: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+}

@@ -14,7 +14,7 @@ export default async function TicketDetailsPage({ params }) {
   const id = Number(params.id)
   const { data: ticket, error } = await supabase
     .from('tickets')
-    .select('*, comments (*)')
+    .select('*, comments (*, comment_attachments (*) )')
     .eq('id', id)
     .single()
 
